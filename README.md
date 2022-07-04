@@ -8,6 +8,8 @@ Some of the additions in this fork compared to the original repository:
 - MedCAT configuration suitable for Dutch medical language.
 - Apache NiFi template of a dataflow that extracts data from a MySQL database, runs it through pseudonomization and MedCAT, and saves the output in OpenSearch.
 
+The original README.md of CogStack-NiFi can be found as [ORIGINAL_README.md](ORIGINAL_README.md).
+
 ## Table of Contents
 - [Installation](#installation)
 - [Apache NiFi](#apache-nifi)
@@ -32,8 +34,8 @@ docker-compose up
 Apache NiFi is used in this project to control data flows. This repository uses the official Apache NiFi Docker image, while the CogStack-NiFi repository creates a custom Docker image to include some specific configuration and examples. This repository attempts to provide a minimal working deployment, so for simplicity we use the official Apache NiFi image.
 
 For site-specific configuration, take a look at how configuration files are mounted as Docker volume:
-- [security/nifi.env-example]()
-- [nifi/conf/nifi.properties]()
+- [security/nifi.env-example](security/nifi.env-example)
+- [nifi/conf/nifi.properties](nifi/conf/nifi.properties)
 
 Additional documentation:
 - https://nifi.apache.org/docs/nifi-docs/html/administration-guide.html
@@ -49,7 +51,7 @@ This repository used [DEDUCE](https://github.com/umcu/deduce-service) for deiden
 
 ## OpenSearch and OpenSearch Dashboards
 For site-specific configuration, take a look at how configuration files are mounted as Docker volume:
-- [services/elasticsearch/config/elasticsearch_opensearch.yml]()
+- [services/elasticsearch/config/elasticsearch_opensearch.yml](services/elasticsearch/config/elasticsearch_opensearch.yml)
 
 Additional documentation:
 - https://hub.docker.com/r/opensearchproject/opensearch
