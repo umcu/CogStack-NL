@@ -1,33 +1,59 @@
-# Introduction
-This repository proposes a possible next step for the free-text data processing capabilities implemented as [CogStack-Pipeline](https://github.com/CogStack/CogStack-Pipeline), shaping the solution more towards Platform-as-a-Service.
+# CogStack-NL
+This repository is a fork of [CogStack-NiFi](https://github.com/CogStack/CogStack-NiFi) and includes a minimum Docker Compose deployment to deploy the essential components to process Dutch electronic health records.
 
-CogStack-NiFi contains example recipes using [Apache NiFi](https://nifi.apache.org/) as the key data workflow engine with a set of services for documents processing with NLP. 
-Each component implementing key functionality, such as Text Extraction or Natural Language Processing, runs as a service where the data routing between the components and data source/sink is handled by Apache NiFi.
-Moreover, NLP services are expected to implement an uniform RESTful API to enable easy plugging-in into existing document processing pipelines, making it possible to use any NLP application in the stack.
+Some of the additions in this fork compared to the original repository:
+- Dutch test data.
+- Pseudonimization based on DEDUCE.
+- MedCATService image that includes the Dutch spaCy model. 
+- MedCAT configuration suitable for Dutch medical language.
+- Apache NiFi template of a dataflow that extracts data from a MySQL database, runs it through pseudonomization and MedCAT, and saves the output in OpenSearch.
 
-## Important
+## Table of Contents
+- [Installation](#installation)
+- [Apache NiFi](#apache-nifi)
+- [Dutch MedCAT](#dutch-medcat)
+- [Deidentification](#deidentification)
+- [OpenSearch and OpenSearch Dashboards](#opensearch-and-opensearch-dashboards)
+- [Development](#development)
 
-Please note that the project is under constant improvement, brining new features or services that might impact current deployments, please be aware as this might affect you, the user, when making upgrades, so be sure to check the release notes and the documentation beforehand. 
+## Installation
+1. Clone this repository.
+2. Navigate to `deploy/`.
+3. Create an `.env` file:
+```bash
+cp .env-example example
+```
+4. Start the docker containers
+```bash
+docker-compose up
+```
 
-Feel free to ask questions on the github issue tracker or on our [discourse website](https://discourse.cogstack.org) which is frequently used by our development team!
-<br>
+## Apache NiFi
+Apache NiFi is used in this project to control data flows. This repository uses the official Apache NiFi Docker image, while the CogStack-NiFi repository creates a custom Docker image to include some specific configuration and examples. This repository attempts to provide a minimal working deployment, so for simplicity we use the official Apache NiFi image.
 
-# Project organisation
-The project is organised in the following directories:
-- [`nifi`](./nifi) - custom Docker image of Apache NiFi with configuration files, drivers, example workflows and custom user resources.
-- [`security`](./security) - scripts to generate SSL keys and certificates for Apache NiFi and related services (when needed) with other security-related requirements.
-- [`services`](./services) - available services with their corresponding configuration files and resources.
-- [`deploy`](./deploy) - an example deployment of Apache NiFi with related services.
-- [`scripts`](./scripts) - helper scripts such as the one ingesting samples into Elasticsearch.
-- [`data`](./data) - any data that you wish to ingest should be placed here.
+For site-specific configuration, take a look at how configuration files are mounted as Docker volume:
+- [security/nifi.env-example]()
+- [nifi/conf/nifi.properties]()
 
+Additional documentation:
+- https://nifi.apache.org/docs/nifi-docs/html/administration-guide.html
+- https://hub.docker.com/r/apache/nifi
 
-Official documentation now available [here](https://cogstack-nifi.readthedocs.io/en/latest/).
+## Dutch MedCAT
+Using Dutch MedCAT models requires specification of a Dutch MedCAT language pack.
+[TODO]: Update MedCATService configuration, so that it can use language packs.
+[TODO]: Add instructuctions how to install and use Dutch MedCAT.
 
-As a good starting point, [deployment](https://cogstack-nifi.readthedocs.io/en/latest/deploy/main.html) walks through an example deployment with some workflow examples.
+## Deidentification
+This repository used [DEDUCE](https://github.com/umcu/deduce-service) for deidentification of Dutch medical texts texts.
 
-All issues are tracked in [README](https://cogstack-nifi.readthedocs.io/en/latest/deploy/main.html), check that section before opening a bug report ticket.
+## OpenSearch and OpenSearch Dashboards
+For site-specific configuration, take a look at how configuration files are mounted as Docker volume:
+- [services/elasticsearch/config/elasticsearch_opensearch.yml]()
 
-# Important news and updates
+Additional documentation:
+- https://hub.docker.com/r/opensearchproject/opensearch
+- https://opensearch.org/docs/latest/opensearch/install/docker/
 
-Please check [IMPORTANT_NEWS](https://cogstack-nifi.readthedocs.io/en/latest/news.html) for any major changes that might affect your deployment and <strong>security problems</strong> that have been discovered.
+## Development
+Ideally changes from [CogStack-NiFi](https://github.com/CogStack/CogStack-NiFi) are regulary merged into this fork. Therefore changes that are not specific for the Dutch deployment should go into the original repository, and will then be end up in this repository as well.
