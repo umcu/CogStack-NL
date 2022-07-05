@@ -23,7 +23,7 @@ The original README.md of CogStack-NiFi can be found as [ORIGINAL_README.md](ORI
 2. Navigate to `deploy/`.
 3. Create an `.env` file:
 ```bash
-cp .env-example example
+cp .env-example .env
 ```
 4. Start the docker containers
 ```bash
