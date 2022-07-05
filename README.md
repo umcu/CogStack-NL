@@ -31,14 +31,20 @@ docker-compose up
 ```
 
 ## Apache NiFi
-Apache NiFi is used in this project to control data flows. This repository uses the official Apache NiFi Docker image, while the CogStack-NiFi repository creates a custom Docker image to include some specific configuration and examples. This repository attempts to provide a minimal working deployment, so for simplicity we use the official Apache NiFi image.
+Apache NiFi is used in this project to control data flows. This repository uses the official Apache NiFi Docker image, while the CogStack-NiFi repository creates a custom Docker image to include some specific configuration (see [`nifi/conf/nifi.properties`](nifi/conf/nifi.properties)). This repository attempts to provide a minimal working deployment, so for simplicity we use the official Apache NiFi image.
 
-For site-specific configuration, take a look at how configuration files are mounted as Docker volume:
-- [security/nifi.env-example](security/nifi.env-example)
-- [nifi/conf/nifi.properties](nifi/conf/nifi.properties)
+For site-specific configuration, such as configuring TLS, environment variables can be provided which are used in the NiFi startup script ([start.sh](https://github.com/apache/nifi/blob/main/nifi-docker/dockerhub/sh/start.sh))
+
+An example with default values for running NiFi without HTTPS is provided in [`security/nifi.env-example`](security/nifi.env-example). For making site-specific changes, it's best to create a `nifi.env` file:
+```bash
+cd security
+cp .nifi.env-example nifi.env
+```
+Also make sure to change `NIFI_ENV_FILE=../security/nifi.env-example` to `NIFI_ENV_FILE=../security/nifi.env` in `deploy/.env`.
 
 Additional documentation:
 - https://nifi.apache.org/docs/nifi-docs/html/administration-guide.html
+- https://nifi.apache.org/docs/nifi-docs/html/getting-started.html
 - https://hub.docker.com/r/apache/nifi
 
 ## Dutch MedCAT

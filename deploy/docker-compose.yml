@@ -30,7 +30,7 @@ services:
       # Logs
       - nifi-logs:/opt/nifi/nifi-current/logs
     ports:
-      - ${NIFI_HOST_PORT}:8443
+      - ${NIFI_HOST_PORT}:${NIFI_CONTAINER_PORT}
 
 #---------------------------------------------------------------------------#
 # MySQL container with test data                                       #
