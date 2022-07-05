@@ -38,7 +38,7 @@ For site-specific configuration, such as configuring TLS, environment variables 
 An example with default values for running NiFi without HTTPS is provided in [`security/nifi.env-example`](security/nifi.env-example). For making site-specific changes, it's best to create a `nifi.env` file:
 ```bash
 cd security
-cp .nifi.env-example nifi.env
+cp nifi.env-example nifi.env
 ```
 Also make sure to change `NIFI_ENV_FILE=../security/nifi.env-example` to `NIFI_ENV_FILE=../security/nifi.env` in `deploy/.env`.
 
