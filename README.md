@@ -3,18 +3,22 @@ This repository is a fork of [CogStack-NiFi](https://github.com/CogStack/CogStac
 
 Some of the additions in this fork compared to the original repository:
 - Dutch test data.
-- Pseudonimization based on DEDUCE.
-- MedCATService image that includes the Dutch spaCy model. 
-- MedCAT configuration suitable for Dutch medical language.
-- Apache NiFi template of a dataflow that extracts data from a MySQL database, runs it through pseudonomization and MedCAT, and saves the output in OpenSearch.
+- Deidentification using DEDUCE.
+- MedCATService image with configuration for Dutch spaCy model .
+- MedCAT models and configuration suitable for Dutch language.
+- Apache NiFi template of a dataflow that:
+   - Extracts data from a MySQL database
+   - Applies deidentification method DEDUCE
+   - Applies entity recognition and linking using MedCAT
+   - Saves the output in OpenSearch
 
 The original README.md of CogStack-NiFi can be found as [ORIGINAL_README.md](ORIGINAL_README.md).
 
 ## Table of Contents
 - [Installation](#installation)
 - [Apache NiFi](#apache-nifi)
-- [Dutch MedCAT](#dutch-medcat)
 - [Deidentification](#deidentification)
+- [MedCAT](#medcat)
 - [OpenSearch and OpenSearch Dashboards](#opensearch-and-opensearch-dashboards)
 - [Development](#development)
 
@@ -47,13 +51,28 @@ Additional documentation:
 - https://nifi.apache.org/docs/nifi-docs/html/getting-started.html
 - https://hub.docker.com/r/apache/nifi
 
-## Dutch MedCAT
-Using Dutch MedCAT models requires specification of a Dutch MedCAT language pack.
-[TODO]: Update MedCATService configuration, so that it can use language packs.
-[TODO]: Add instructuctions how to install and use Dutch MedCAT.
+A template for a NiFi flow which extracts data from a MySQL database, deu
 
 ## Deidentification
-This repository used [DEDUCE](https://github.com/umcu/deduce-service) for deidentification of Dutch medical texts texts.
+This repository uses [DEDUCE](https://github.com/umcu/deduce-service) for deidentification of Dutch medical texts texts.
+
+To test the functionality, visit URL where you have it running (default http://localhost:5001) or send an API request from the command line:
+```bash
+curl -X 'POST' 'localhost:5001/deidentify' -H 'accept: application/json' -H 'Content-Type: application/json' -d '{"text": "Jan Jansen is ziek.", "id": "001"}'
+```
+
+## MedCAT
+Using MedCAT for Dutch languages requires Dutch models, which can be configured in two ways:
+1. Providing individual models, such as `vocab.dat` and `cdb.dat`. In this case, the language specific spaCy model should be installed as well. These can be provided to Docker Compose when building the docker-image. For testing and demonstration, models based on sample data are provided in this repository, see [`services/nlp-services/applications/medcat/models/umls-dutch-sample`](services/nlp-services/applications/medcat/models/umls-dutch-sample).
+2. Providing a MedCAT model pack. All models, including spaCy models, are included in this model pack. spaCy models are relatively large (>17MB), so this approach was not used for testing and demonstration purposes of this repo.
+
+Testing MedCAT can be done using:
+```bash
+curl -X 'POST' 'localhost:5000/api/process' -H 'Content-Type: application/json' -d '{"content":{"text":"Gebruikelijke behandelingen voor kanker zijn onder meer chirurgie, chemotherapie en radiotherapie."}}'
+```
+This should return a JSON containing linked entities.
+
+Additional configuration and usage examples can be found at https://github.com/CogStack/MedCATservice.
 
 ## OpenSearch and OpenSearch Dashboards
 For site-specific configuration, take a look at how configuration files are mounted as Docker volume:

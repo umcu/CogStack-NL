@@ -60,17 +60,18 @@ services:
     ports:
       - ${DEDUCE_HOST_PORT}:5000
 
-  # medcat:
-  #   image: https://github.com/umcu/MedCATservice#dutch_spacy_model
-  #   restart: always
-  #   env_file:
-  #     - ../services/nlp-services/applications/medcat/config/env_app
-  #   volumes:
-  #     - ${LOCAL_MODEL_CDB_PATH}:/cat/models/cdb.dat:ro
-  #     - ${LOCAL_MODEL_VOCAB_PATH}:/cat/models/vocab.dat:ro
-  #     - ${LOCAL_MODEL_META_PATH_LIST}:/cat/models/mc_status:ro
-  #   ports:
-  #     - ${MEDCAT_HOST_PORT}:5000
+  medcat:
+    build: 
+      context: https://github.com/umcu/MedCATservice.git#fix-model-pack+spacy-models-dockerfile
+      args:
+        - SPACY_MODELS=$SPACY_MODELS
+    restart: always
+    env_file:
+      - ../services/nlp-services/applications/medcat/config/env_app
+    volumes:
+      - ${LOCAL_MEDCAT_MODEL_DIR}:/cat/models/:ro
+    ports:
+      - ${MEDCAT_HOST_PORT}:5000
 
 #---------------------------------------------------------------------------#
 # OpenSearch                                                                #

@@ -1,0 +1,47 @@
+{
+  "Model ID": "eaa032b28bc421ad",
+  "Last Modified On": "08 July 2022",
+  "History (from least to most recent)": [],
+  "Description": "Small sample of Dutch UMLS concepts for testing purposes",
+  "Source Ontology": "UMLS",
+  "Location": null,
+  "MetaCAT models": [],
+  "Basic CDB Stats": {
+    "Number of concepts": 15,
+    "Number of names": 26,
+    "Number of concepts that received training": 9,
+    "Number of seen training examples in total": 266,
+    "Average training examples per concept": 29.555555555555557
+  },
+  "Performance": {
+    "ner": {},
+    "meta": {}
+  },
+  "Important Parameters (Partial view, all available in cat.config)": {
+    "config.ner['min_name_len']": {
+      "value": 3,
+      "description": "Minimum detection length (found terms/mentions shorter than this will not be detected)."
+    },
+    "config.ner['upper_case_limit_len']": {
+      "value": 4,
+      "description": "All detected terms shorter than this value have to be uppercase, otherwise they will be ignored."
+    },
+    "config.linking['similarity_threshold']": {
+      "value": 0.25,
+      "description": "If the confidence of the model is lower than this a detection will be ignore."
+    },
+    "config.linking['filters']['cuis']": {
+      "value": 0,
+      "description": "Length of the CUIs filter to be included in outputs. If this is not 0 (i.e. not empty) its best to check what is included before using the model"
+    },
+    "config.general['spell_check']": {
+      "value": true,
+      "description": "Is spell checking enabled."
+    },
+    "config.general['spell_check_len_limit']": {
+      "value": 7,
+      "description": "Words shorter than this will not be spell checked."
+    }
+  },
+  "MedCAT Version": "1.3.0"
+}
