@@ -12,7 +12,7 @@ Some of the additions in this fork compared to the original repository:
    - Applies entity recognition and linking using MedCAT
    - Saves the output in OpenSearch
 
-The original README.md of CogStack-NiFi can be found as [ORIGINAL_README.md](ORIGINAL_README.md).
+The original README.md of CogStack-NiFi can be found as [ORIGINAL_README.md](ORIGINAL_README.md). Official CogStack-Nifi documentation, which includes a security section useful for production deployment, can be found at https://cogstack-nifi.readthedocs.io.
 
 ## Table of Contents
 - [Installation](#installation)
@@ -37,7 +37,7 @@ docker-compose up
 ## Apache NiFi
 Apache NiFi is used in this project to control data flows. This repository uses the official Apache NiFi Docker image, while the CogStack-NiFi repository creates a custom Docker image to include some specific configuration (see [`nifi/conf/nifi.properties`](nifi/conf/nifi.properties)). This repository attempts to provide a minimal working deployment, so for simplicity we use the official Apache NiFi image.
 
-For site-specific configuration, such as configuring TLS, environment variables can be provided which are used in the NiFi startup script ([start.sh](https://github.com/apache/nifi/blob/main/nifi-docker/dockerhub/sh/start.sh))
+For site-specific configuration, such as configuring TLS, environment variables can be provided which are used in the NiFi startup script ([start.sh](https://github.com/apache/nifi/blob/main/nifi-docker/dockerhub/sh/start.sh)).
 
 An example with default values for running NiFi without HTTPS is provided in [`security/nifi.env-example`](security/nifi.env-example). For making site-specific changes, it's best to create a `nifi.env` file:
 ```bash
@@ -50,8 +50,6 @@ Additional documentation:
 - https://nifi.apache.org/docs/nifi-docs/html/administration-guide.html
 - https://nifi.apache.org/docs/nifi-docs/html/getting-started.html
 - https://hub.docker.com/r/apache/nifi
-
-A template for a NiFi flow which extracts data from a MySQL database, deu
 
 ## Deidentification
 This repository uses [DEDUCE](https://github.com/umcu/deduce-service) for deidentification of Dutch medical texts texts.
@@ -75,7 +73,19 @@ This should return a JSON containing linked entities.
 Additional configuration and usage examples can be found at https://github.com/CogStack/MedCATservice.
 
 ## OpenSearch and OpenSearch Dashboards
-For site-specific configuration, take a look at how configuration files are mounted as Docker volume:
+To test whether the OpenSearch instance is up, run the following command, which contains the default username and password:
+```bash
+curl -u admin:admin "http://localhost:9200/_cat/shards?v"       
+```
+
+This should return something like:
+```bash
+index                shard prirep state   docs  store ip         node
+.opendistro_security 0     p      STARTED    9 59.9kb 172.25.0.2 80dff132d75e
+.kibana_1            0     p      STARTED    1    5kb 172.25.0.2 80dff132d75e
+```
+
+For site-specific configuration, take a look at the congfiguration file which can be mounted as Docker volume:
 - [services/elasticsearch/config/elasticsearch_opensearch.yml](services/elasticsearch/config/elasticsearch_opensearch.yml)
 
 Additional documentation:
