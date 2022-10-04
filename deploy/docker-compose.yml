@@ -18,6 +18,7 @@ services:
       - ../nifi/user-templates:/opt/nifi/nifi-current/conf/templates:ro
       - ../nifi/user-scripts:/opt/nifi/user-scripts:ro
       - ../nifi/user-schemas:/opt/nifi/user-schemas:ro
+      - ${NIFI_STAGING_DIR}:/staging_data/:ro
 
       # State
       - nifi-conf:/opt/nifi/nifi-current/conf
