@@ -63,8 +63,8 @@ curl -X 'POST' 'localhost:5001/deidentify' -H 'accept: application/json' -H 'Con
 This repository uses [MedCAT service](https://github.com/CogStack/MedCATservice) for named entity recognition, linking and context detection of documents with MedCAT.
 
 Using MedCAT for Dutch language requires Dutch models, which can be configured in two ways:
-1. By providing individual models, such as `vocab.dat` and `cdb.dat`. In this case, the language specific spaCy model should be installed as well. These can be provided to Docker Compose when building the docker image. For testing and demonstration, models based on sample data are provided in this repository, see [`services/nlp-services/applications/medcat/models/umls-dutch-sample`](services/nlp-services/applications/medcat/models/umls-dutch-sample).
-2. By providing a MedCAT model pack, which includes MedCAT's `vocab.dat` and `cdb.dat` files, spaCy models and MedCAT biLSTM models for context detection such as negation. spaCy models are relatively large (>17MB), so the model pack approach was not used for testing and demonstration purposes of this repo.
+1. By providing the `vocab.dat` and `cdb.dat` models. The default configuration of this repository is using this approach. For testing and demonstration purposes, sample models based on mock data are provided, see [`services/nlp-services/applications/medcat/models/umls-dutch-sample`](services/nlp-services/applications/medcat/models/umls-dutch-sample). Note that this requires a Dutch spaCy model, which is installed in the used fork of MedCAT service (see MedCAT section in `deploy/docker-compose.yml`)
+2. By providing a MedCAT model pack, which includes MedCAT's `vocab.dat` and `cdb.dat` model files, spaCy models and MedCAT biLSTM models for context detection such as negation. spaCy models are relatively large (>17MB), so this approach is not used as default configuration of this repository.
 
 ### Configuring a model pack
 1. Download a model pack from https://github.com/CogStack/MedCAT.
