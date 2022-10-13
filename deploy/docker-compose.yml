@@ -65,13 +65,13 @@ services:
     build: 
       context: https://github.com/umcu/MedCATservice.git#fix-model-pack+spacy-models-dockerfile
       args:
-        - SPACY_MODELS=$SPACY_MODELS
+        - SPACY_MODELS=${SPACY_MODELS}
     restart: always
     env_file:
       - ../services/nlp-services/applications/medcat/config/env_app
       - ../services/nlp-services/applications/medcat/config/env_medcat
     volumes:
-      - ${LOCAL_MEDCAT_MODEL_DIR}:/cat/models/:ro
+      - ${LOCAL_MEDCAT_MODEL_DIR}:/cat/models/:rw
     ports:
       - ${MEDCAT_HOST_PORT}:5000
 
