@@ -1,0 +1,132 @@
+version: '3'
+services:
+#---------------------------------------------------------------------------#
+# Apache NiFi                                                               #
+#---------------------------------------------------------------------------#
+  nifi:
+    # See: https://hub.docker.com/r/apache/nifi
+    image: apache/nifi:1.18.0
+    restart: always
+    env_file:
+      - ${NIFI_ENV_FILE}
+
+    volumes:
+      # Configurations and custom changes
+      # - ${NIFI_CERT_DIR}:/opt/certs/:ro
+      # - ../nifi/conf/:/opt/nifi/nifi-current/conf/:rw
+      - ../nifi/drivers:/opt/nifi/drivers:ro
+      - ../nifi/user-templates:/opt/nifi/nifi-current/conf/templates:ro
+      - ../nifi/user-scripts:/opt/nifi/user-scripts:ro
+      - ../nifi/user-schemas:/opt/nifi/user-schemas:ro
+      - ${NIFI_STAGING_DIR}:/staging_data/:ro
+
+      # State
+      - nifi-conf:/opt/nifi/nifi-current/conf
+      - nifi-state:/opt/nifi/nifi-current/state
+      - nifi-provenance:/opt/nifi/nifi-current/provenance_repository
+      - nifi-database:/opt/nifi/nifi-current/database_repository
+      - nifi-flowfiles:/opt/nifi/nifi-current/flowfile_repository
+      - nifi-content:/opt/nifi/nifi-current/content_repository
+
+      # Logs
+      - nifi-logs:/opt/nifi/nifi-current/logs
+    ports:
+      - ${NIFI_HOST_PORT}:${NIFI_CONTAINER_PORT}
+
+#---------------------------------------------------------------------------#
+# Database with test data                                       #
+#---------------------------------------------------------------------------#
+  postgres-dutch-samples:
+    image: postgres:15.1
+    restart: always
+    ports:
+      - ${POSTGRES_PORT}:5432
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    volumes:
+      # Mount seed data
+      - ../services/dutch-samples/dutch-samples.sql:/docker-entrypoint-initdb.d/file1.sql
+#---------------------------------------------------------------------------#
+# NLP Services containers                                                   #
+#                                                                           #
+#---------------------------------------------------------------------------#
+  deduce:
+    build: https://github.com/umcu/deduce-service.git#main
+    restart: always
+    ports:
+      - ${DEDUCE_HOST_PORT}:5000
+
+  medcat:
+    build: 
+      context: https://github.com/CogStack/MedCATservice.git#v0.3.2
+      args:
+        - SPACY_MODELS=${SPACY_MODELS}
+    restart: always
+    env_file:
+      - ../services/nlp-services/applications/medcat/config/env_app
+      - ../services/nlp-services/applications/medcat/config/env_medcat
+    volumes:
+      - ${LOCAL_MEDCAT_MODEL_DIR}:/cat/models/:rw
+    ports:
+      - ${MEDCAT_HOST_PORT}:5000
+
+#---------------------------------------------------------------------------#
+# OpenSearch                                                                #
+#---------------------------------------------------------------------------#
+  opensearch-node1:
+    # See:
+    # - https://hub.docker.com/r/opensearchproject/opensearch
+    # - https://opensearch.org/docs/latest/opensearch/install/docker/
+    image: opensearchproject/opensearch:1.2.4
+    restart: always
+    environment:
+      - discovery.type=single-node
+      - plugins.security.ssl.http.enabled=false
+    volumes:
+      # Data
+      - opensearch-data-1:/usr/share/elasticsearch/data
+
+      # Config
+      # - ../services/elasticsearch/config/elasticsearch_opensearch.yml:/usr/share/opensearch/config/opensearch.yml:ro
+    ports:
+      - ${ELASTIC_HOST_PORT}:9200
+
+
+  opensearch-dashboards:
+    image: opensearchproject/opensearch-dashboards:1.2.0
+    restart: always
+    environment:
+      OPENSEARCH_HOSTS: '["http://opensearch-node1:9200"]'
+    # volumes:
+      # Config
+      # - ../services/kibana/config/kibana_opensearch.yml:/usr/share/opensearch-dashboards/config/opensearch_dashboards.yml:ro
+    ports:
+      - ${KIBANA_HOST_PORT}:5601
+    depends_on:
+      - opensearch-node1
+
+#---------------------------------------------------------------------------#
+# Docker named volumes                                                      #
+#---------------------------------------------------------------------------#
+volumes:
+  # NiFi
+  nifi-conf:
+    driver: local
+  nifi-state:
+    driver: local
+  nifi-provenance:
+    driver: local
+  nifi-database:
+    driver: local
+  nifi-flowfiles:
+    driver: local
+  nifi-content:
+    driver: local
+  nifi-logs:
+    driver: local
+
+  # OpenSearch
+  opensearch-data-1:
+    driver: local
