@@ -60,7 +60,7 @@ services:
 
   medcat:
     build: 
-      context: https://github.com/CogStack/MedCATservice.git#v0.3.2
+      context: https://github.com/CogStack/MedCATservice.git#v0.4.0
       args:
         - SPACY_MODELS=${SPACY_MODELS}
     restart: always
