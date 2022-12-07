@@ -84,15 +84,16 @@ curl -X 'POST' 'localhost:5001/deidentify' -H 'accept: application/json' -H 'Con
 This repository uses [MedCAT service](https://github.com/CogStack/MedCATservice) for named entity recognition, linking and context detection of documents with MedCAT.
 
 Using MedCAT for Dutch language requires Dutch models, which can be configured in two ways:
-1. By providing the `vocab.dat` and `cdb.dat` models. The default configuration of this repository is using this approach. For testing and demonstration purposes, sample models based on mock data are provided, see [`services/nlp-services/applications/medcat/models/umls-dutch-sample`](services/nlp-services/applications/medcat/models/umls-dutch-sample). Note that this requires a Dutch spaCy model, which is installed in the used fork of MedCAT service (see MedCAT section in `deploy/docker-compose.yml`)
-2. By providing a MedCAT model pack, which includes MedCAT's `vocab.dat` and `cdb.dat` model files, spaCy models and MedCAT biLSTM models for context detection such as negation. spaCy models are relatively large (>17MB), so this approach is not used as default configuration of this repository.
+1. By providing the `vocab.dat` and `cdb.dat` models. The default configuration of this repository is using this approach. For testing and demonstration purposes, sample models based on mock data are provided, see [`services/nlp-services/applications/medcat/models/umls-dutch-sample`](services/nlp-services/applications/medcat/models/umls-dutch-sample). Note that this requires a Dutch spaCy model, which is installed when building the Docker image for MedCAT service.
+2. By providing a MedCAT model pack, which includes MedCAT's `vocab.dat` and `cdb.dat` model files, spaCy models and MedCAT biLSTM models for context detection such as negation. A sample model pack is not provided in this repository, because the file size of the included spaCy model would too large for a proper Git repository.
 
 ### Configuring a model pack
 1. Download a model pack from https://github.com/CogStack/MedCAT.
 1. Place it in a directory which can be mounted to Docker and rename it to `model_pack.zip`.
 1. In `services/nlp-services/applications/medcat/config/env_app` uncomment the `APP_MEDCAT_MODEL_PACK` property.
 1. In `deploy/.env` point `LOCAL_MEDCAT_MODEL_DIR` to the directory containing the model pack.
-1. (Re)start the MedCAT container.
+1. Stop and remove the container: `docker stop cogstack-dev-medcat-1; docker rm cogstack-dev-medcat-1`
+1. Restart the container: `docker compose up -d medcat`
 
 ### Testing MedCAT
 Testing the MedCAT web service can be done from the terminal using
