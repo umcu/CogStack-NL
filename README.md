@@ -1,4 +1,7 @@
 # CogStack-NL
+
+> :warning: This repository is no longer maintained/updated. It may still have some use, but please make sure to update services to newer versions manually to prevent any (security) issues. For further reference, see the original repo: https://github.com/CogStack/CogStack-NiFi 
+
 This repository is a fork of [CogStack-NiFi](https://github.com/CogStack/CogStack-NiFi) and includes a minimal Docker Compose deployment to deploy the essential components to process Dutch electronic health records.
 
 Additions in this fork compared to the original repository:
